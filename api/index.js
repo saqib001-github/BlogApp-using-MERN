@@ -6,14 +6,14 @@ import authRoutes from './routes/auth.route.js';
 
 dotenv.config(); 
 
-try {
+try { 
 
-    await mongoose.connect('mongodb+srv://saqibmohd582:ZDQ1J1BvuQVGWrdY@mern-blog.jjsiu.mongodb.net/?retryWrites=true&w=majority&appName=mern-blog')
+    await mongoose.connect(process.env.MONGO);
     console.log("Mongo DB is connected.");
 } catch (err) {
     console.error('MongoDB connection error:', err);
 }
-
+ 
 const app = express();
 
 app.use(express.json());
