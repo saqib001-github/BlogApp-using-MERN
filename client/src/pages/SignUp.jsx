@@ -1,6 +1,7 @@
-import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react"
+import { Alert, Button,  Spinner, FloatingLabel } from "flowbite-react"
 import { useState } from "react";
 import { Link , useNavigate} from "react-router-dom"
+import {OAuth} from "../components/OAuth.jsx";
 export default function SignUp() {
   const navigate=useNavigate();
   const [formData, setFormData] = useState({});
@@ -56,31 +57,34 @@ export default function SignUp() {
         <div className="flex-1">
           <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
             <div>
-              <Label color='black' value="username" />
+              <FloatingLabel variant="standard" lable="Username" type="text" id="username" onChange={handleChange} />
+              {/* <Label color='black' value="username" />
               <TextInput
-                type="text"
-                placeholder="Username"
-                id="username"
-                onChange={handleChange}
-              />
+              type="text"
+              placeholder="Username"
+              id="username"
+              onChange={handleChange}
+            /> */}
             </div>
             <div>
-              <Label color='black' value="email" />
+            <FloatingLabel  variant="standard" lable="Email" type="email" id="email" onChange={handleChange} />
+              {/* <Label color='black' value="email" />
               <TextInput
                 type="email"
                 placeholder="example@gmail.com"
                 id="email"
                 onChange={handleChange}
-              />
+              /> */}
             </div>
             <div>
-              <Label color='black' value="password" />
+            <FloatingLabel variant="standard" lable="Password" type="password" id="password" onChange={handleChange} />
+              {/* <Label color='black' value="password" />
               <TextInput
                 type="password"
                 placeholder="Password"
                 id="password"
                 onChange={handleChange}
-              />
+              /> */}
             </div>
 
             <Button gradientDuoTone='purpleToPink' type="submit" disabled={loading}>{
@@ -91,6 +95,7 @@ export default function SignUp() {
                 </>
               ) : 'Sign Up'
             }</Button>
+            <OAuth/>
           </form>
           <div className="mt-2 ml-2 text-sm flex gap-1">
             <span>Already have an account?</span>

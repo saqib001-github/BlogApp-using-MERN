@@ -1,23 +1,24 @@
-import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react"
+import { Alert, Button, Spinner ,FloatingLabel} from "flowbite-react"
 import { useState } from "react";
-import { Link , useNavigate} from "react-router-dom"
-import {useDispatch,useSelector} from 'react-redux';
-import {signInStart,signInFailure,signInSuccess} from '../redux/user/userSlice.js';
+import { Link, useNavigate } from "react-router-dom"
+import { useDispatch, useSelector } from 'react-redux';
+import { signInStart, signInFailure, signInSuccess } from '../redux/user/userSlice.js';
+import  {OAuth}  from "../components/OAuth.jsx";
 
 
 export default function SignIn() {
-  
-  const navigate=useNavigate();
+
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({});
-  const {loading ,error:errorMessage}=useSelector(state=>state.user);
+  const { loading, error: errorMessage } = useSelector(state => state.user);
   const dispatch = useDispatch();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
 
   }
-  const handleSubmit = async (e) => { 
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if(!formData.email || !formData.password){
+    if (!formData.email || !formData.password) {
       return dispatch(signInFailure("All fields are required!"));
     }
     try {
@@ -27,12 +28,12 @@ export default function SignIn() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-      
+
       const data = await res.json();
-      if(data.success===false){
+      if (data.success === false) {
         return dispatch(signInFailure(data.message));
       }
-      if(res.ok){
+      if (res.ok) {
         dispatch(signInSuccess(data));
         navigate('/');
       }
@@ -54,7 +55,7 @@ export default function SignIn() {
         {/* right */}
         <div className="flex-1">
           <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-            <div>
+            {/* <div>
               <Label color='black' value="email" />
               <TextInput
                 type="email"
@@ -62,8 +63,8 @@ export default function SignIn() {
                 id="email"
                 onChange={handleChange}
               />
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <Label color='black' value="password" />
               <TextInput
                 type="password"
@@ -71,16 +72,24 @@ export default function SignIn() {
                 id="password"
                 onChange={handleChange}
               />
+            </div> */}
+            <div>
+
+              <FloatingLabel  variant="standard" type="email" id="email" onChange={handleChange} label="Email" />
+            </div>
+            <div>
+              <FloatingLabel variant="standard" type="password" id="password" onChange={handleChange} label="Password" />
             </div>
 
             <Button gradientDuoTone='purpleToPink' type="submit" disabled={loading}>{
               loading ? (
                 <>
-                  <Spinner className="sm"/>
+                  <Spinner className="sm" />
                   <span className="pl-3">Loading...</span>
                 </>
               ) : 'Sign In'
             }</Button>
+            <OAuth />
           </form>
           <div className="mt-2 ml-2 text-sm flex gap-1">
             <span>Create new account?</span>
