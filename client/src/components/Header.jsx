@@ -3,9 +3,13 @@ import { Link,useLocation } from "react-router-dom";
 import { AiOutlineSearch } from 'react-icons/ai';
 import {FaMoon} from "react-icons/fa"
 import { useMemo } from "react";
-import {  useSelector } from "react-redux";
+import {  useSelector,useDispatch } from "react-redux";
+import { toggleTheme } from "../redux/theme/themeSlice.js";
+
+
 export default function Header() {
     const path = useLocation().pathname;
+    const dispatch=useDispatch();
     const {currentUser}=useSelector(state=>state.user);
     const activepath=useMemo(()=>path,[path]);
   return (
@@ -26,7 +30,7 @@ export default function Header() {
             <AiOutlineSearch/>
         </Button>
         <div className="flex gap-2 md:order-2">
-            <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
+            <Button className="w-12 h-10 hidden sm:inline" color="gray" pill onClick={()=>dispatch(toggleTheme())}>
                 <FaMoon/>
             </Button>
             {currentUser ? (
