@@ -5,8 +5,8 @@ import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/st
 import {app} from '../firebase.js'
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-
-
+import { updateStart,updateSuccess,updateFailure } from '../redux/user/userSlice.js';
+import { useDispatch } from 'react-redux';
 export default function DashProfile() {
   
   
@@ -15,6 +15,11 @@ export default function DashProfile() {
   const [imageUrl, setImageUrl] = useState(null);
   const [imageFileUploadProgress,setImageFileUploadProgress]=useState(null);
   const [imageFileUploadError,setImageFileUploadError]=useState(null);
+  const [imageFileUploading,setImageFileUploading]=useState(false);
+  const [formData,setFromData]=useState({});
+  const [imageUploadedSuccess,setImageUploadedSuccess]=useState(null);
+  const [updateUserError,setUpdateUserError]=useState(null);
+  const dispatch=useDispatch();
   const pickFileRef=useRef();
   
   useEffect(()=>{
@@ -24,6 +29,7 @@ export default function DashProfile() {
   },[image]);
   
   const uploadImage=async ()=>{
+    setImageFileUploading(true)
     setImageFileUploadError(null)
     const storage= getStorage(app);
     const fileName = new Date().getTime() + image.name;
@@ -40,28 +46,71 @@ export default function DashProfile() {
         setImageFileUploadProgress(null)
         setImage(null)
         setImageUrl(null)
+        setImageFileUploading(false)
       },
       ()=>{
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL)=>{
           setImageUrl(downloadURL);
+          setFromData({...formData,profilePicture:downloadURL});
+          setImageFileUploading(false)
         })
       }
     )   
   }
   
-  function handleChange(e) {
+  const handleChange=(e)=> {
     const file = e.target.files[0];
     if (file) {
       setImage(file);
       setImageUrl(URL.createObjectURL(file));
     }
   }
+  const handleInput=(e)=>{
+    setFromData({...formData,[e.target.id]:e.target.value});
+  }
+  const handleSubmit= async (e)=>{
+    e.preventDefault();
+    setUpdateUserError(null);
+    setImageUploadedSuccess(null)
+    if(Object.keys(formData).length === 0){
+      setUpdateUserError("No changes made")
+      return;
+    }
+    if(imageFileUploading){
+      setUpdateUserError("Please wait for image to upload")
+      return;}
+    try {
+      dispatch(updateStart());
+      const response=await fetch(`/api/user/update/${currentUser._id}`,{
+        method:'PUT',
+        headers:{
+          'Content-Type':'application/json',
+        },
+        body:JSON.stringify(formData),
+      });
+      const data=await response.json();
+      if(!response.ok){
+        dispatch(updateFailure(data.message));
+        setUpdateUserError(data.message)
+      }else{
+        dispatch(updateSuccess(data));
+        if(imageUploadedSuccess){
+          setImageUploadedSuccess("User's image is uploaded successfully.");
+        }
+        setUpdateUserError(data.message)
+      }
+
+    } catch (error) {
+      dispatch(updateFailure(error.message));
+    }
+    
+  }
 
 
   return (
     <div className='max-w-lg mx-auto p-3 w-full'>
       <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
-      <form className='flex flex-col'>
+      <form onSubmit={handleSubmit} className='flex flex-col'>
         <input hidden type="file" accept='image/*' onChange={handleChange} ref={pickFileRef} />
         <div className='relative w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full' onClick={()=> pickFileRef.current.click()}>
           {imageFileUploadProgress && (
@@ -83,16 +132,19 @@ export default function DashProfile() {
           )}
           <img src={imageUrl || currentUser.profilePicture} alt="User" className={`rounded-full w-full h-full object-cover border-8 border-[lightgray] ${imageFileUploadProgress && imageFileUploadProgress<100 && 'opacity-60'}`} />
         </div>
-        <FloatingLabel variant='standard' type='text' id='username' label='username' defaultValue={currentUser.username} />
-        <FloatingLabel variant='standard' type='email' id='email' label='email' defaultValue={currentUser.email} />
-        <FloatingLabel variant='standard' type='password' id='password' label='password' />
-        <Button type='submit' gradientDuoTone='purpleToBlue' outline>Update</Button>
+        <FloatingLabel className='mt-1' variant='standard' type='text' id='username'  label='username' defaultValue={currentUser.username} onChange={handleInput} />
+        <FloatingLabel className='mt-1' variant='standard' type='email' id='email' label='email' defaultValue={currentUser.email} onChange={handleInput} />
+        <FloatingLabel className='mt-1' variant='standard' type='password' id='password' label='password' onChange={handleInput} />
+        <Button type='submit' gradientDuoTone='purpleToBlue' outline className='mt-3'>Update</Button>
       </form>
-        <div className='m-3'>{imageFileUploadError && <Alert color='failure'>{imageFileUploadError}</Alert>}</div>
       <div className='text-red-400 flex justify-between mt-4'>
         <span className='cursor-pointer underline'>Delete Account</span>
         <span className='cursor-pointer underline'>Sign Out</span>
       </div>
+        <div className='m-3'>{imageFileUploadError && <Alert color='failure'>{imageFileUploadError}</Alert>}</div>
+      {imageUploadedSuccess && 
+      <Alert color='success' className='mt-5'>{imageUploadedSuccess}</Alert>}
+      {updateUserError && <Alert color='failure' className='mt-5'>{updateUserError}</Alert>}
     </div>
   )
 }
