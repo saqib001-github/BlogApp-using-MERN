@@ -1,9 +1,9 @@
-import { Alert, Button, Spinner ,FloatingLabel} from "flowbite-react"
+import { Alert, Button, Spinner, TextInput, Label } from "flowbite-react"
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from 'react-redux';
 import { signInStart, signInFailure, signInSuccess } from '../redux/user/userSlice.js';
-import  {OAuth}  from "../components/OAuth.jsx";
+import { OAuth } from "../components/OAuth.jsx";
 
 
 export default function SignIn() {
@@ -55,7 +55,7 @@ export default function SignIn() {
         {/* right */}
         <div className="flex-1">
           <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-            {/* <div>
+            <div>
               <Label color='black' value="email" />
               <TextInput
                 type="email"
@@ -63,8 +63,8 @@ export default function SignIn() {
                 id="email"
                 onChange={handleChange}
               />
-            </div> */}
-            {/* <div>
+            </div>
+            <div>
               <Label color='black' value="password" />
               <TextInput
                 type="password"
@@ -72,14 +72,14 @@ export default function SignIn() {
                 id="password"
                 onChange={handleChange}
               />
-            </div> */}
-            <div>
+            </div>
+            {/* <div>
 
-              <FloatingLabel  variant="standard" type="email" id="email" onChange={handleChange} label="Email" />
+              <FloatingLabel  variant="outlined" type="email" id="email" onChange={handleChange} label="Email" />
             </div>
             <div>
               <FloatingLabel variant="standard" type="password" id="password" onChange={handleChange} label="Password" />
-            </div>
+            </div> */}
 
             <Button gradientDuoTone='purpleToPink' type="submit" disabled={loading}>{
               loading ? (

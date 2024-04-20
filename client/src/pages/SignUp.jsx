@@ -1,4 +1,4 @@
-import { Alert, Button,  Spinner, FloatingLabel } from "flowbite-react"
+import { Alert, Button,  Spinner, Label,TextInput } from "flowbite-react"
 import { useState } from "react";
 import { Link , useNavigate} from "react-router-dom"
 import {OAuth} from "../components/OAuth.jsx";
@@ -57,34 +57,34 @@ export default function SignUp() {
         <div className="flex-1">
           <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
             <div>
-              <FloatingLabel variant="standard" lable="Username" type="text" id="username" onChange={handleChange} />
-              {/* <Label color='black' value="username" />
+              {/* <FloatingLabel variant="standard" lable="Username" type="text" id="username" onChange={handleChange} /> */}
+              <Label color='black' value="username" />
               <TextInput
               type="text"
               placeholder="Username"
               id="username"
               onChange={handleChange}
-            /> */}
+            />
             </div>
             <div>
-            <FloatingLabel  variant="standard" lable="Email" type="email" id="email" onChange={handleChange} />
-              {/* <Label color='black' value="email" />
+            {/* <FloatingLabel  variant="standard" lable="Email" type="email" id="email" onChange={handleChange} /> */}
+              <Label color='black' value="email" />
               <TextInput
                 type="email"
                 placeholder="example@gmail.com"
                 id="email"
                 onChange={handleChange}
-              /> */}
+              />
             </div>
             <div>
-            <FloatingLabel variant="standard" lable="Password" type="password" id="password" onChange={handleChange} />
-              {/* <Label color='black' value="password" />
+            {/* <FloatingLabel variant="standard" lable="Password" type="password" id="password" onChange={handleChange} /> */}
+              <Label color='black' value="password" />
               <TextInput
                 type="password"
                 placeholder="Password"
                 id="password"
                 onChange={handleChange}
-              /> */}
+              />
             </div>
 
             <Button gradientDuoTone='purpleToPink' type="submit" disabled={loading}>{
