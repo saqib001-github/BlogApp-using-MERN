@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Alert, Button, FloatingLabel, Modal } from 'flowbite-react'
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage'
 import { app } from '../firebase.js'
+import { Link } from 'react-router-dom';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import {
@@ -15,7 +16,7 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 export default function DashProfile() {
 
 
-  const { currentUser, error } = useSelector(state => state.user);
+  const { currentUser, error, loading } = useSelector(state => state.user);
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
@@ -133,21 +134,21 @@ export default function DashProfile() {
     }
   }
 
-const handleSignout= async ()=>{
-  try {
-    const res=await fetch('/api/user/signout',{
-      method:'POST'
-    });
-    const data=res.json();
-    if(!res.ok){
-      console.log(data.message);
-    }else{
-      dispatch(signoutSuccess());
+  const handleSignout = async () => {
+    try {
+      const res = await fetch('/api/user/signout', {
+        method: 'POST'
+      });
+      const data = res.json();
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(signoutSuccess());
+      }
+    } catch (error) {
+      console.log(error.message);
     }
-  } catch (error) {
-    console.log(error.message);
   }
-}
 
   return (
     <div className='max-w-lg mx-auto p-3 w-full'>
@@ -178,7 +179,12 @@ const handleSignout= async ()=>{
         <FloatingLabel className='mt-1' variant='standard' type='text' id='username' label='username' defaultValue={currentUser.username} onChange={handleInput} />
         <FloatingLabel className='mt-1' variant='standard' type='email' id='email' label='email' defaultValue={currentUser.email} onChange={handleInput} />
         <FloatingLabel className='mt-1' variant='standard' type='password' id='password' label='password' onChange={handleInput} />
-        <Button type='submit' gradientDuoTone='purpleToBlue' outline className='mt-3'>Update</Button>
+        <Button type='submit' gradientDuoTone='purpleToBlue' outline className='mt-3' disabled={loading || imageFileUploading}>{loading ? 'Loading...':'Update'}</Button>
+        {currentUser.isAdmin && (
+          <Link to={'/create-post'}>
+            <Button type='button' gradientDuoTone='purpleToPink' className='w-full mt-3'>Create a post</Button>
+          </Link>
+        )}
       </form>
       <div className='text-red-400 flex justify-between mt-4'>
         <span onClick={() => setShowModal(true)} className='cursor-pointer underline'>Delete Account</span>
