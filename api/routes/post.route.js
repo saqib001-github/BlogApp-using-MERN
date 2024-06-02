@@ -4,9 +4,10 @@ import { create,getPosts,deletePosts, updatePost } from '../controllers/post.con
 
 const router = express.Router();
 
-router.post('/create', verifyToken, create)
 router.get('/getposts',getPosts);
-router.delete('/deleteposts/:postId/:userId',verifyToken,deletePosts);
-router.put('/updatepost/:postId/:userId',verifyToken,updatePost);
+router.use(verifyToken);
+router.post('/create',create)
+router.delete('/deleteposts/:postId/:userId',deletePosts);
+router.put('/updatepost/:postId/:userId',updatePost);
 
 export default router;
