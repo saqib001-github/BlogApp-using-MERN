@@ -6,9 +6,9 @@ const router=express.Router();
 
 router.post('/signout',signout);
 router.get('/test',test);
-router.delete('/delete/:userId',deleteUser);
 router.use(verifyToken);
 router.put('/update/:userId',updateUser);
 router.get('/getusers',getUsers);
+router.delete('/delete/:userId',deleteUser);
 
 export default router;
