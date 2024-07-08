@@ -105,3 +105,16 @@ export const getUsers = async (req,res,next) =>{
         next(error)
     }
 }
+
+export const getUser =async (req,res)=>{
+    try {
+        const user = await User.findOne({_id : req.params.userId});
+        if(!user){
+            return next(errorHandler(404,'User not found'));
+        }
+        const {password,...rest}=user._doc;
+        res.status(200).json(rest);
+    } catch (error) {
+        console.log(error);
+    }
+}
