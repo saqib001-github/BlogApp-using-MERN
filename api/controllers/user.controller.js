@@ -46,19 +46,19 @@ export const updateUser = async (req, res, next) => {
     }
 };
 
-export const deleteUser =async (req,res,next)=>{
+export const deleteUser = async (req, res, next) => {
     if ((!req.user.isAdmin) && req.user.id !== req.params.userId) {
         return next(errorHandler(403, 'You are not allowed to delete this user'));
     }
     try {
         await User.findByIdAndDelete(req.params.userId);
-        res.status(200).json({message:"User deleted successfully."});
+        res.status(200).json({ message: "User deleted successfully." });
     } catch (error) {
         next(error);
     }
 }
 
-export const signout = (req,res,next)=>{
+export const signout = (req, res, next) => {
     try {
         res.clearCookie('access_token');
         res.status(200).json('You have been signed out');
@@ -67,9 +67,9 @@ export const signout = (req,res,next)=>{
     }
 }
 
-export const getUsers = async (req,res,next) =>{
-    if(!req.user.isAdmin){
-        return next(errorHandler(403,'You are not allowed to see all users'));
+export const getUsers = async (req, res, next) => {
+    if (!req.user.isAdmin) {
+        return next(errorHandler(403, 'You are not allowed to see all users'));
     }
     try {
         const startIndex = parseInt(req.query.startIndex) || 0;
@@ -77,12 +77,12 @@ export const getUsers = async (req,res,next) =>{
         const sortDirection = req.query.sort === 'asc' ? 1 : -1;
 
         const users = await User.find()
-        .sort({createdAt:sortDirection})
-        .skip(startIndex)
-        .limit(limit);
+            .sort({ createdAt: sortDirection })
+            .skip(startIndex)
+            .limit(limit);
 
-        const userWithoutPassword = users.map(user=>{
-            const {password , ...rest} = user._doc;
+        const userWithoutPassword = users.map(user => {
+            const { password, ...rest } = user._doc;
             return rest;
         })
         const totalUsers = await User.countDocuments();
@@ -94,10 +94,10 @@ export const getUsers = async (req,res,next) =>{
             now.getDate()
         );
         const lastMonthUsers = await User.countDocuments({
-            createdAt:{$gte:oneMonthAgo},
+            createdAt: { $gte: oneMonthAgo },
         })
         res.status(200).json({
-            users:userWithoutPassword,
+            users: userWithoutPassword,
             totalUsers,
             lastMonthUsers
         })
@@ -106,13 +106,13 @@ export const getUsers = async (req,res,next) =>{
     }
 }
 
-export const getUser =async (req,res)=>{
+export const getUser = async (req, res) => {
     try {
-        const user = await User.findOne({_id : req.params.userId});
-        if(!user){
-            return next(errorHandler(404,'User not found'));
+        const user = await User.findOne({ _id: req.params.userId });
+        if (!user) {
+            return next(errorHandler(404, 'User not found'));
         }
-        const {password,...rest}=user._doc;
+        const { password, ...rest } = user._doc;
         res.status(200).json(rest);
     } catch (error) {
         console.log(error);
