@@ -1,14 +1,18 @@
-import Post from "../models/post.model.js";
-import { errorHandler } from "../utils/error.js"
+import Post from '../models/post.model.js';
+import { errorHandler } from '../utils/error.js';
 
 export const create = async (req, res, next) => {
     if (!req.user.isAdmin) {
-        return next(errorHandler(403, 'You are not allowed to create a post'))
+        return next(errorHandler(403, 'You are not allowed to create a post'));
     }
     if (!req.body.title || !req.body.content) {
-        return next(errorHandler(400, 'Please provide all required fields'))
+        return next(errorHandler(400, 'Please provide all required fields'));
     }
-    const slug = req.body.title.split(' ').join('-').toLowerCase().replace(/[^a-zA-Z0-9-]/g, '');
+    const slug = req.body.title
+        .split(' ')
+        .join('-')
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9-]/g, '');
     const newPost = new Post({
         ...req.body,
         slug,
@@ -16,13 +20,13 @@ export const create = async (req, res, next) => {
     });
     try {
         const savedPost = await newPost.save();
-        res.status(201).json({ success: true, post: savedPost, })
+        res.status(201).json(savedPost);
     } catch (error) {
         next(error);
     }
-}
+};
 
-export const getPosts = async (req, res, next) => {
+export const getposts = async (req, res, next) => {
     try {
         const startIndex = parseInt(req.query.startIndex) || 0;
         const limit = parseInt(req.query.limit) || 9;
@@ -65,34 +69,39 @@ export const getPosts = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-}
+};
 
-export const deletePosts =async (req,res,next) =>{
-    if(!req.user.isAdmin || req.user.id !== req.params.userId){
-        return next(errorHandler(403,'You are not allowed to delete this post.'));
+export const deletepost = async (req, res, next) => {
+    if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+        return next(errorHandler(403, 'You are not allowed to delete this post'));
     }
     try {
         await Post.findByIdAndDelete(req.params.postId);
-        res.status(200).json('This post has been deleted.');
+        res.status(200).json('The post has been deleted');
     } catch (error) {
-        next(error)
+        next(error);
     }
-}
+};
 
-export const updatePost = async (req,res,next) => {
-    if(!req.user.isAdmin || req.user.id !== req.params.userId){
-        return next(errorHandler(403,'You are not allowed to update this post.'));
+export const updatepost = async (req, res, next) => {
+    if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+        return next(errorHandler(403, 'You are not allowed to update this post'));
     }
     try {
-        const updatedPost = await Post.findByIdAndUpdate(req.params.postId,{
-            $set : {
-                title:req.body.title,
-                content:req.body.content,
-                image:req.body.image,
-            }
-        },{new : true });
+        const updatedPost = await Post.findByIdAndUpdate(
+            req.params.postId,
+            {
+                $set: {
+                    title: req.body.title,
+                    content: req.body.content,
+                    category: req.body.category,
+                    image: req.body.image,
+                },
+            },
+            { new: true }
+        );
         res.status(200).json(updatedPost);
     } catch (error) {
         next(error);
     }
-}
+};
