@@ -1,8 +1,7 @@
 import { Button } from 'flowbite-react'
-import React from 'react'
+import { Link } from 'react-router-dom'
 
-const CallToAction = () => {
-  return (
+const CallToAction = () =>  (
     <div className='flex flex-col sm:flex-row p-3 border border-teal-500 justify-center items-center rounded-tl-3xl rounded-br-3xl text-center'>
         <div className='flex-1 justify-center flex flex-col'>
             <h2 className='text-2xl'>Want to learn more about JavaScript?</h2>
@@ -17,6 +16,5 @@ const CallToAction = () => {
 
     </div>
   )
-}
 
 export default CallToAction

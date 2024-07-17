@@ -1,5 +1,6 @@
 import { Footer } from "flowbite-react";
 import {  BsFacebook, BsGithub, BsInstagram, BsTwitter } from "react-icons/bs";
+import Logo from "./Logo";
 
 export default function Component() {
   return (
@@ -8,8 +9,7 @@ export default function Component() {
         <div className="grid w-full justify-between sm:flex sm:justify-between md:flex md:grid-cols-1">
           <div className="flex self-center justify-center text-white">
           <div to="/" className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white">
-            <span className="px-2 rounded-lg text-white">Saqib`s</span>
-            Blog
+            <Logo />
         </div>
           </div>
           <div className="grid grid-cols-2 gap-8 sm:mt-4 sm:grid-cols-3 sm:gap-6">
