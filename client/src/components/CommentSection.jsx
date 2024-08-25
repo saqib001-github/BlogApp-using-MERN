@@ -120,7 +120,7 @@ const CommentSection = ({ postId }) => {
           <div className="flex items-center gap-1 my-5 text-gray-500 text-sm">
             <p>Signed in as: </p>
             <img className=" ml-1 h-6 w-6 object-cover rounded-full" src={currentUser.profilePicture} alt="" />
-            <Link to={'/dashboard?tab=profile'} className="text-sm text-cyan-600 hover:underline">@{currentUser.username}</Link>
+            <Link to={'/dashboard?tab=profile'} className="text-sm text-cyan-600 hover:underline">@{currentUser?.username}</Link>
           </div>
         ) : (
           <div className="text-sm text-teal-500 my-5 flex gap-1">You must be signed in to see comments.

@@ -2,6 +2,8 @@ import { Alert, Button,  Spinner, Label,TextInput } from "flowbite-react"
 import { useState } from "react";
 import { Link , useNavigate} from "react-router-dom"
 import {OAuth} from "../components/OAuth.jsx";
+
+
 export default function SignUp() {
   const navigate=useNavigate();
   const [formData, setFormData] = useState({});

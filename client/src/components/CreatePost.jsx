@@ -6,7 +6,8 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/
 import { app } from '../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import Options from './Options';
 
 const CreatePost = () => {
 
@@ -15,9 +16,9 @@ const CreatePost = () => {
     const [imageUploadProgress, setImageUploadProgress] = useState(null);
     const [imageUploadError, setImageUploadError] = useState(null);
     const [formData, setFormData] = useState({});
-    const [publishError,setPublishError]=useState(null)
+    const [publishError, setPublishError] = useState(null)
 
-    const navigate =useNavigate();
+    const navigate = useNavigate();
     const handleUploadImage = async () => {
         try {
             if (!file) {
@@ -55,23 +56,23 @@ const CreatePost = () => {
         }
     };
 
-    const handleSubmit = async (e)=>{
+    const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('/api/post/create',{
-                method:'POST',
-                headers:{
-                    'Content-Type':'application/json',
+            const res = await fetch('/api/post/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-                body:JSON.stringify(formData),
+                body: JSON.stringify(formData),
             });
             const data = await res.json();
             console.log(data);
-            if(!res.ok){
+            if (!res.ok) {
                 setPublishError(data.message);
                 return;
             }
-            if(res.ok){
+            if (res.ok) {
                 setPublishError(null);
                 navigate(`/post/${data.post.slug}`);
             }
@@ -91,20 +92,14 @@ const CreatePost = () => {
                         required
                         id='title'
                         className='flex-1'
-                        onChange={ e => {
-                            setFormData({...formData,title:e.target.value});
+                        onChange={e => {
+                            setFormData({ ...formData, title: e.target.value });
                         }}
                     />
                     <Select
-                        onChange={e => { setFormData({...formData,category:e.target.value})}}
+                        onChange={e => { setFormData({ ...formData, category: e.target.value }) }}
                     >
-                        <option value='uncategorized'>Select a category</option>
-                        <option value='javascript'>JavaScript</option>
-                        <option value='reactjs'>React.js</option>
-                        <option value='nextjs'>Next.js</option>
-                        <option value='python'>Python</option>
-                        <option value='c/c++'>C/C++</option>
-                        <option value='java'>Java</option>
+                        <Options />
                     </Select>
                 </div>
                 <div className='flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3'>
@@ -129,22 +124,22 @@ const CreatePost = () => {
                     </Button>
                 </div>
 
-            {imageUploadError && (<Alert color='failure' >{imageUploadError}</Alert>)}
-            {formData.image && (
-                <img src={formData.image} alt='upload' className='w-full h-72 object-cover' />
-            )}
+                {imageUploadError && (<Alert color='failure' >{imageUploadError}</Alert>)}
+                {formData.image && (
+                    <img src={formData.image} alt='upload' className='w-full h-72 object-cover' />
+                )}
                 <ReactQuill
                     theme='snow'
                     placeholder='Write something...'
                     className='h-72 mb-12'
                     required
-                    onChange={value => { setFormData({...formData,content:value})}}
+                    onChange={value => { setFormData({ ...formData, content: value }) }}
                 />
                 <Button type='submit' gradientDuoTone='purpleToPink'>
                     Publish
                 </Button>
                 {
-                    publishError && 
+                    publishError &&
                     <Alert color='failure' >{publishError}</Alert>
                 }
             </form>

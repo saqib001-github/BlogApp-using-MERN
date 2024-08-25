@@ -29,10 +29,10 @@ export default function App() {
           <Route path="/create-post" element={<CreatePost />}></Route>
           <Route path="/update-post/:postId" element={<UpdatePost />}></Route>
         </Route>
+        <Route path="/post/:postSlug" element={<PostPage />}></Route>
         <Route path="/sign-in" element={<SignIn />}></Route>
         <Route path="/sign-up" element={<SignUp />}></Route>
         <Route path="/search" element={<Search />}></Route>
-        <Route path="/post/:postSlug" element={<PostPage />}></Route>
       </Routes>
       <Footer />
     </BrowserRouter>

@@ -1,16 +1,18 @@
-import { Link, useParams } from "react-router-dom"
-import { useEffect, useState } from "react";
+import { Link, redirect, useParams } from "react-router-dom"
+import {  useEffect, useState } from "react";
 import { Button, Spinner } from "flowbite-react";
 import CallToAction from "../components/CallToAction";
 import CommentSection from "../components/CommentSection";
 import PostCard from "../components/PostCard.jsx";
-
+import {useSelector} from 'react-redux'
 const PostPage = () => {
-    const { postSlug } = useParams();
+    const { postSlug } = useParams();   
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [recentPosts, setRecentPosts] = useState(null);
     const [post, setPost] = useState(null);
+    const { currentUser } = useSelector((state) => state.user);
+
     useEffect(() => {
         const fetchPost = async () => {
             try {
@@ -30,6 +32,8 @@ const PostPage = () => {
             } catch (error) {
                 setError(true);
                 setLoading(false);
+                console.log(error);
+                
             }
         }
         fetchPost();
@@ -49,7 +53,7 @@ const PostPage = () => {
             console.log(error.message);
         }
     }, []);
-
+    if(error) redirect('/')
     if (loading) return <div className="flex justify-center items-center min-h-screen">
         <Spinner size={`xl`} />
     </div>
@@ -64,10 +68,10 @@ const PostPage = () => {
                 <span className=" italic">{post && (post.content.length / 1000).toFixed(0)} mins read</span>
             </div>
             <div className="p-3 max-w-2xl mx-auto w-full postcontent" dangerouslySetInnerHTML={{ __html: post && post.content }}>
-
+                
             </div>
             <div className="max-w-4xl mx-auto w-full "><CallToAction /></div>
-            <div><CommentSection postId={post._id} /></div>
+            {currentUser && <div><CommentSection postId={post._id} /></div> }
             <div className='flex flex-col w-full justify-center items-center mb-5'>
                 <h1 className='text-2xl mt-5'>Recent articles</h1>
                 <div className='flex flex-wrap w-full gap-5 mt-5 justify-center'>
